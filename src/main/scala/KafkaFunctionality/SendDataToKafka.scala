@@ -37,7 +37,9 @@ object SendDataToKafka {
     val messageDF: DataFrame = if (response.isSuccessful) {
       val responseBody = response.body().string()
       val filePath = s"tmp/bduk1710/Levina/$city/${city}_$j_date.json"
-      saveStringAsJsonFile(responseBody, filePath)
+//      saveStringAsJsonFile(responseBody, filePath)
+      saveStringAsJsonFileToHDFS(spark, responseBody, filePath)
+
       println(s"API data for $city saved as JSON")
       val filePathSeq = Seq((filePath))
       import spark.implicits._
@@ -79,5 +81,27 @@ object SendDataToKafka {
     sink.writeUtf8(data)
     sink.close()
   }
+
+  // Function to save a string as JSON in a file in HDFS
+  def saveStringAsJsonFileToHDFS(spark: SparkSession, data: String, filePath: String): Unit = {
+    import org.apache.hadoop.fs.{FileSystem, Path}
+    val hadoopConf = spark.sparkContext.hadoopConfiguration
+    val hdfs = FileSystem.get(hadoopConf)
+
+    val outputStream = hdfs.create(new Path(filePath))
+    val writer = new BufferedWriter(new OutputStreamWriter(outputStream))
+
+    try {
+      writer.write(data)
+      println(s"API data saved to HDFS at: $filePath")
+    } catch {
+      case e: Exception =>
+        println(s"Error saving data to HDFS: ${e.getMessage}")
+    } finally {
+      writer.close()
+      hdfs.close()
+    }
+  }
+
 
 }
