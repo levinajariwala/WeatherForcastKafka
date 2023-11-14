@@ -37,11 +37,13 @@ object SendDataToKafka {
     val response = client.newCall(request).execute()
     val messageDF: DataFrame = if (response.isSuccessful) {
       val responseBody = response.body().string()
-      val filePath = s"tmp/bduk1710/Levina/$city/${city}_$j_date.json"
+      val filePath = s"/tmp/bduk1710/Levina/$city/${city}_$j_date.json"
 //      saveStringAsJsonFile(responseBody, filePath)
       saveStringAsJsonFileToHDFS(spark, responseBody, filePath)
 
       println(s"API data for $city saved as JSON")
+      // Create a DataFrame with the file path
+      println(filePath)
       val filePathSeq = Seq((filePath))
       import spark.implicits._
       filePathSeq.toDF("File")
