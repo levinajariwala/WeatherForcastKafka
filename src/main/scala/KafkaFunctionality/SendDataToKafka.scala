@@ -1,9 +1,10 @@
 
 
 package KafkaFunctionality
-import org.apache.spark.sql.{DataFrame,SparkSession}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
-import java.io.File
+
+import java.io.{File, OutputStreamWriter}
 import okhttp3.{OkHttpClient, Request}
 import okio.Okio
 
@@ -89,7 +90,7 @@ object SendDataToKafka {
     val hdfs = FileSystem.get(hadoopConf)
 
     val outputStream = hdfs.create(new Path(filePath))
-    val writer = new BufferedWriter(new OutputStreamWriter(outputStream))
+    val writer = new OutputStreamWriter(outputStream)
 
     try {
       writer.write(data)
