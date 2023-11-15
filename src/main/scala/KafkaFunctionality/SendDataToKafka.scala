@@ -47,7 +47,7 @@ object SendDataToKafka {
       val filePathSeq = Seq((filePath))
       println("48")
       import spark.implicits._
-      println("50")
+//      println("50")
       filePathSeq.toDF("File")
       println("52")
     } else {
