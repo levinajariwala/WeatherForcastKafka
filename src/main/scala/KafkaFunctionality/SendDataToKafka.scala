@@ -64,7 +64,7 @@ object SendDataToKafka {
     messageDF.show()
     messageDF
       .write
-      .format("kafka")
+//      .format("kafka")
       .option("kafka.bootstrap.servers", kafkaServer)
       .option("topic", topicSampleName)
       .save()
