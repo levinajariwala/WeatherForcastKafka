@@ -45,8 +45,11 @@ object SendDataToKafka {
       // Create a DataFrame with the file path
       println(filePath)
       val filePathSeq = Seq((filePath))
+      println("48")
       import spark.implicits._
+      println("50")
       filePathSeq.toDF("File")
+      println("52")
     } else {
       println(s"API request for $city was not successful. Response code: ${response.code()}")
       println(s"Response body: ${response.body().string()}")
@@ -57,7 +60,7 @@ object SendDataToKafka {
 
     val kafkaServer: String = "ip-172-31-3-80.eu-west-2.compute.internal:9092"
     val topicSampleName: String = "weather_forecast"
-
+    println("63")
     messageDF
       .write
       .format("kafka")
