@@ -38,7 +38,7 @@ object SendDataToKafka {
     val messageDF: DataFrame = if (response.isSuccessful) {
       val responseBody = response.body().string()
       val filePath = s"/tmp/bduk1710/Levina/$city/${city}_$j_date.json"
-//      saveStringAsJsonFile(responseBody, filePath)
+      //      saveStringAsJsonFile(responseBody, filePath)
       saveStringAsJsonFileToHDFS(spark, responseBody, filePath)
 
       println(s"API data for $city saved as JSON")
@@ -47,9 +47,9 @@ object SendDataToKafka {
       val filePathSeq = Seq((filePath))
       println("48")
       import spark.implicits._
-//      println("50")
+      //      println("50")
       filePathSeq.toDF("File")
-      println("52")
+//      println("52")
     } else {
       println(s"API request for $city was not successful. Response code: ${response.code()}")
       println(s"Response body: ${response.body().string()}")
@@ -57,7 +57,7 @@ object SendDataToKafka {
       import spark.implicits._
       emptySeq.toDF("File")
     }
-
+    println("60")
     val kafkaServer: String = "ip-172-31-3-80.eu-west-2.compute.internal:9092"
     val topicSampleName: String = "weather_forecast"
     println("63")
