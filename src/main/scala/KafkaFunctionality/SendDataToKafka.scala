@@ -61,6 +61,7 @@ object SendDataToKafka {
     val kafkaServer: String = "ip-172-31-3-80.eu-west-2.compute.internal:9092"
     val topicSampleName: String = "weather_forecast"
     println("63")
+    messageDF.show()
     messageDF
       .write
       .format("kafka")
