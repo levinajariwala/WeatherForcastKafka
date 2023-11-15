@@ -62,12 +62,7 @@ object SendDataToKafka {
     val topicSampleName: String = "weather_forecast"
     println("63")
     messageDF.show()
-//    messageDF
-//      .write
-//      .format("kafka")
-//      .option("kafka.bootstrap.servers", kafkaServer)
-//      .option("topic", topicSampleName)
-//      .save()
+    messageDF.select("File")
     messageDF
       .write
 //      .format("kafka")
