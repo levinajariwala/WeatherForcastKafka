@@ -51,28 +51,49 @@ object ReadFromKafka  {
 
     query.awaitTermination() // Wait for the streaming query to terminate (or Ctrl+C to stop)
 
+//    val lastWindSpeed = df.select("wind_mph")
+//      .orderBy(desc("timestamp"))
+//      .limit(1)
+//      .first()
+//      .getDouble(0)
+//    println("\n\n\n")
+//
+//    println(lastWindSpeed)
+//    println("\n\n\n")
+//    // Show DataFrame
+////    df.writeStream
+////      .outputMode("append")
+////      .format("console")
+////      .start()
+////      .awaitTermination()
+////    query.awaitTermination()
+//
+//
+//    if (lastWindSpeed > 4.0) {
+//      println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
+//      // Send an email alert
+////      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
+//    }
+
+    query.awaitTermination()
+
+    // Code after query termination
     val lastWindSpeed = df.select("wind_mph")
       .orderBy(desc("timestamp"))
       .limit(1)
-      .first()
-      .getDouble(0)
-    println("\n\n\n")
+      .firstOption()
+      .map(_.getDouble(0))
 
-    println(lastWindSpeed)
-    println("\n\n\n")
-    // Show DataFrame
-//    df.writeStream
-//      .outputMode("append")
-//      .format("console")
-//      .start()
-//      .awaitTermination()
-//    query.awaitTermination()
+    lastWindSpeed.foreach { windSpeed =>
+      println("\n\n\n")
+      println(windSpeed)
+      println("\n\n\n")
 
-
-    if (lastWindSpeed > 4.0) {
-      println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
-      // Send an email alert
-//      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
+      if (windSpeed > 4.0) {
+        println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
+        // Perform actions for high wind alert here
+        // sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $windSpeed")
+      }
     }
 
 
