@@ -59,7 +59,7 @@ object ReadFromKafka  {
 
 
 
-    if (lastMessageWind > 4.0) {
+    if (lastWindSpeed > 4.0) {
       println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
       // Send an email alert
 //      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
