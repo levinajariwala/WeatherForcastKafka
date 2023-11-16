@@ -49,11 +49,11 @@ object ReadFromKafka  {
     // Check if the last message's wind is higher than 4
     val lastMessageWind = df.select("wind_mph").orderBy(desc("timestamp")).limit(1).first().getDouble(0)
     print(lastMessageWind)
-//    if (lastMessageWind > 4.0) {
-//      println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
-//      // Send an email alert
-////      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
-//    }
+    if (lastMessageWind > 4.0) {
+      println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
+      // Send an email alert
+//      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
+    }
 
 //    // Start the streaming query
 //    val query = df.writeStream
@@ -66,34 +66,34 @@ object ReadFromKafka  {
   }
 
   // Function to send email alert
-  def sendEmailAlert(recipient: String, subject: String, body: String): Unit = {
-   val properties = new java.util.Properties()
-        properties.put("mail.smtp.host", "smtp.gmail.com") // Replace with your SMTP host
-        properties.put("mail.smtp.port", "587") // Replace with your SMTP port
-        properties.put("mail.smtp.auth", "true")
-        properties.put("mail.smtp.starttls.enable", "true")
-
-        val session = Session.getInstance(properties, new javax.mail.Authenticator() {
-          override protected def getPasswordAuthentication(): PasswordAuthentication = {
-            new PasswordAuthentication("15mscit026@gmail.com", "zvqm ctzt izma xkaa") // Replace with your email and password
-          }
-        })
-
-        try {
-          val message = new MimeMessage(session)
-          message.setFrom(new InternetAddress("15mscit026@gmail.com")) // Replace with sender email
-
-          // Replace with recipient email
-          message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient))
-
-          message.setSubject(subject)
-          message.setText(body)
-
-          Transport.send(message)
-          println("Email sent successfully!")
-        } catch {
-          case e: MessagingException => e.printStackTrace()
-        }
-  }
+//  def sendEmailAlert(recipient: String, subject: String, body: String): Unit = {
+//   val properties = new java.util.Properties()
+//        properties.put("mail.smtp.host", "smtp.gmail.com") // Replace with your SMTP host
+//        properties.put("mail.smtp.port", "587") // Replace with your SMTP port
+//        properties.put("mail.smtp.auth", "true")
+//        properties.put("mail.smtp.starttls.enable", "true")
+//
+//        val session = Session.getInstance(properties, new javax.mail.Authenticator() {
+//          override protected def getPasswordAuthentication(): PasswordAuthentication = {
+//            new PasswordAuthentication("15mscit026@gmail.com", "zvqm ctzt izma xkaa") // Replace with your email and password
+//          }
+//        })
+//
+//        try {
+//          val message = new MimeMessage(session)
+//          message.setFrom(new InternetAddress("15mscit026@gmail.com")) // Replace with sender email
+//
+//          // Replace with recipient email
+//          message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient))
+//
+//          message.setSubject(subject)
+//          message.setText(body)
+//
+//          Transport.send(message)
+//          println("Email sent successfully!")
+//        } catch {
+//          case e: MessagingException => e.printStackTrace()
+//        }
+//  }
 
 }
