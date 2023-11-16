@@ -71,6 +71,7 @@
       <artifactId>javax.mail</artifactId>
       <version>1.6.2</version> <!-- or the appropriate version -->
     </dependency>
+
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
