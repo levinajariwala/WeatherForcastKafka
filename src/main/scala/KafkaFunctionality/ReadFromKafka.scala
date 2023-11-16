@@ -2,6 +2,7 @@ package KafkaFunctionality
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.streaming.Trigger
 //import org.apache.commons.mail._
 import javax.mail._
 import javax.mail.internet._
@@ -41,6 +42,15 @@ object ReadFromKafka  {
 
     // Check if the last message's wind is higher than 4
     // Retrieve the last wind speed from the DataFrame
+    // Output the processed data to the console (for demonstration purposes)
+    val query = processedDF.writeStream
+      .outputMode("append")
+      .format("console")
+      .trigger(Trigger.ProcessingTime("5 seconds")) // Set the trigger interval
+      .start() // Start the streaming query
+
+    query.awaitTermination() // Wait for the streaming query to terminate (or Ctrl+C to stop)
+
     val lastWindSpeed = df.select("wind_mph")
       .orderBy(desc("timestamp"))
       .limit(1)
@@ -51,12 +61,12 @@ object ReadFromKafka  {
     println(lastWindSpeed)
     println("\n\n\n")
     // Show DataFrame
-    df.writeStream
-      .outputMode("append")
-      .format("console")
-      .start()
-      .awaitTermination()
-    query.awaitTermination()
+//    df.writeStream
+//      .outputMode("append")
+//      .format("console")
+//      .start()
+//      .awaitTermination()
+//    query.awaitTermination()
 
 
     if (lastWindSpeed > 4.0) {
