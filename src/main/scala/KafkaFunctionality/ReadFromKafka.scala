@@ -60,8 +60,6 @@ object ReadFromKafka  {
 //
 //    query.awaitTermination()
 
-
-    spark.stop()
   }
 
   // Function to send email alert
