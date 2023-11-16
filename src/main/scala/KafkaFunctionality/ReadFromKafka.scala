@@ -43,7 +43,7 @@ object ReadFromKafka  {
     // Check if the last message's wind is higher than 4
     // Retrieve the last wind speed from the DataFrame
     // Output the processed data to the console (for demonstration purposes)
-    val query = processedDF.writeStream
+    val query = df.writeStream
       .outputMode("append")
       .format("console")
       .trigger(Trigger.ProcessingTime("5 seconds")) // Set the trigger interval
