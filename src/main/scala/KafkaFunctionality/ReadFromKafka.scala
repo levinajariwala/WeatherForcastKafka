@@ -52,19 +52,23 @@ object ReadFromKafka  {
     query.awaitTermination()
 
     // Retrieve the last wind speed after the query has finished
-    df.select("wind_mph")
-      .orderBy(desc("timestamp"))
-      .limit(1)
+    import org.apache.spark.sql.functions.{max, col}
+
+    val lastWindSpeed = df.select(max(col("timestamp")).as("max_timestamp"))
+      .join(df, col("timestamp") === col("max_timestamp"))
+      .select("wind_mph")
       .as[Double]
       .collect()
       .headOption
-      .foreach { lastWindSpeed =>
-        if (lastWindSpeed > 4.0) {
-          println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
-          // Print alert for high wind speed
-        }
+
+    lastWindSpeed.foreach { windSpeed =>
+      if (windSpeed > 4.0) {
+        println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
+        // Print alert for high wind speed
       }
-//    val lastWindSpeed = df.select("wind_mph")
+    }
+
+    //    val lastWindSpeed = df.select("wind_mph")
 //      .orderBy(desc("timestamp"))
 //      .limit(1)
 //      .first()
