@@ -19,6 +19,12 @@ object ReadFromKafka {
     // Define the Kafka topic to subscribe to
     val topic = "weather_forecast"
 
+    // Define your schema
+    val schema = StructType(Seq(
+      StructField("wind_mph", DoubleType, nullable = true),
+      StructField("humidity", IntegerType, nullable = true)
+    ))
+
     // Define the schema for the JSON messages
 //    val schema = StructType(Seq(
 //      StructField("id", StringType, nullable = true),
@@ -37,8 +43,27 @@ object ReadFromKafka {
 //    ))
 //    import spark.implicits._
     // Read the JSON messages from Kafka as a DataFrame
-    val df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", "ip-172-31-3-80.eu-west-2.compute.internal:9092").option("subscribe", topic).option("startingOffsets", "earliest").load().select(from_json(col("value").cast("string"), schema).as("data")).selectExpr("data.*")
-    println(df)
+//    val df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", "ip-172-31-3-80.eu-west-2.compute.internal:9092").option("subscribe", topic).option("startingOffsets", "earliest").load().select(from_json(col("value").cast("string"), schema).as("data")).selectExpr("data.*")
+//    println(df)
+
+    // Read from Kafka and parse JSON data
+    val df = spark.readStream
+      .format("kafka")
+      .option("kafka.bootstrap.servers", "ip-172-31-3-80.eu-west-2.compute.internal:9092")
+      .option("subscribe", topic)
+      .option("startingOffsets", "earliest")
+      .load()
+      .select(from_json(col("value").cast("string"), schema).as("data"))
+      .selectExpr("data.*")
+
+    // Show DataFrame
+    df.writeStream
+      .outputMode("append")
+      .format("console")
+      .start()
+      .awaitTermination()
+
+
     // Write the DataFrame as CSV files to HDFS
 //    df.writeStream.format("csv").option("checkpointLocation", "/tmp/jenkins/kafka/trainarrival/checkpoint").option("path", "/tmp/jenkins/kafka/trainarrival/data").start().awaitTermination()
 
