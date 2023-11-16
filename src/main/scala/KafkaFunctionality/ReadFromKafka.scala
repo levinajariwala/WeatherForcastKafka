@@ -84,7 +84,7 @@ object ReadFromKafka {
 
     // Write the DataFrame as CSV files to HDFS
 //    df.writeStream.format("csv").option("checkpointLocation", "/tmp/jenkins/kafka/trainarrival/checkpoint").option("path", "/tmp/jenkins/kafka/trainarrival/data").start().awaitTermination()
-
+    spark.stop()
   }
 
   // Function to send email alert
