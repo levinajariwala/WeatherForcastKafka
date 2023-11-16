@@ -90,8 +90,15 @@ val properties = new Properties()
 
     try {
       val message = new MimeMessage(session)
+
       message.setFrom(new InternetAddress("15mscit026@gmail.com@example.com")) // Replace with sender email
-      message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("levinajariwala@gmail.com"))
+
+      // Create an array of InternetAddress objects for the recipient's email addresses
+      val recipientAddresses = Array(new InternetAddress("levinajariwala@gmail.com"))
+
+      // Set the recipient addresses using the array of InternetAddress objects
+      message.setRecipients(Message.RecipientType.TO, recipientAddresses)
+//      message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("levinajariwala@gmail.com"))
       message.setSubject(subject)
       message.setText(body)
 
