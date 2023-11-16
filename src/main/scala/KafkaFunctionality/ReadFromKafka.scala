@@ -40,10 +40,15 @@ object ReadFromKafka  {
       .selectExpr("data.*")
 
     // Check if the last message's wind is higher than 4
-    val lastMessageWind = df.select("wind_mph").orderBy(desc("timestamp")).limit(1).first().getDouble(0)
+    // Retrieve the last wind speed from the DataFrame
+    val lastWindSpeed = df.select("wind_mph")
+      .orderBy(desc("timestamp"))
+      .limit(1)
+      .first()
+      .getDouble(0)
     println("\n\n\n")
 
-    print(lastMessageWind)
+    println(lastWindSpeed)
     println("\n\n\n")
     // Show DataFrame
     df.writeStream
