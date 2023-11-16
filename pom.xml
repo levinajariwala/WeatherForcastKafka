@@ -61,6 +61,11 @@
       <artifactId>commons-email</artifactId>
       <version>1.5</version> <!-- Or the appropriate version -->
     </dependency>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>javax.mail-api</artifactId>
+      <version>1.6.2</version> <!-- Or the appropriate version -->
+    </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
