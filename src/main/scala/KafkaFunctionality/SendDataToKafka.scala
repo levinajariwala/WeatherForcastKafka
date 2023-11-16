@@ -103,13 +103,17 @@ object SendDataToKafka {
     // Assuming you want to create a messageDF with specific columns and pass wind and humidity
     val messageDF = extractedDF.select(
       $"wind_mph", $"humidity")
+
+
     val kafkaServer: String = "ip-172-31-3-80.eu-west-2.compute.internal:9092"
     val topicSampleName: String = "weather_forecast"
     println("63")
     messageDF.show()
 //    messageDF.select("File")
-        val query = messageDF
-      .selectExpr("CAST(wind_mph AS STRING)", "CAST(humidity AS STRING)") // Converting columns to String type
+
+    messageDF
+    .selectExpr("CAST(wind_mph AS STRING) AS key", "CAST(wind_mph AS STRING) AS value")
+//      .selectExpr("CAST(wind_mph AS STRING)", "CAST(humidity AS STRING)") // Converting columns to String type
       .writeStream
       .format("kafka")
       .option("kafka.bootstrap.servers", kafkaServer)
