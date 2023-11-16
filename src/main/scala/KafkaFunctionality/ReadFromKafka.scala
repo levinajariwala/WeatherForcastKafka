@@ -46,11 +46,28 @@ object ReadFromKafka  {
     val query = df.writeStream
       .outputMode("append")
       .format("console")
-      .trigger(Trigger.ProcessingTime("5 seconds")) // Set the trigger interval
-      .start() // Start the streaming query
+      .trigger(Trigger.ProcessingTime("5 seconds"))
+      .start()
 
-    query.awaitTermination() // Wait for the streaming query to terminate (or Ctrl+C to stop)
+    query.awaitTermination()
 
+    // Code after query termination
+    val lastWindSpeed = df.select("wind_mph")
+      .orderBy(desc("timestamp"))
+      .limit(1)
+      .firstOption()
+      .map(_.getDouble(0))
+
+    lastWindSpeed.foreach { windSpeed =>
+      println("\n\n\n")
+      println(windSpeed)
+      println("\n\n\n")
+
+      if (windSpeed > 4.0) {
+        println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
+        // Print alert for high wind speed
+      }
+    }
 //    val lastWindSpeed = df.select("wind_mph")
 //      .orderBy(desc("timestamp"))
 //      .limit(1)
@@ -75,26 +92,26 @@ object ReadFromKafka  {
 ////      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
 //    }
 
-    query.awaitTermination()
-
-    // Code after query termination
-    val lastWindSpeed = df.select("wind_mph")
-      .orderBy(desc("timestamp"))
-      .limit(1)
-      .firstOption()
-      .map(_.getDouble(0))
-
-    lastWindSpeed.foreach { windSpeed =>
-      println("\n\n\n")
-      println(windSpeed)
-      println("\n\n\n")
-
-      if (windSpeed > 4.0) {
-        println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
-        // Perform actions for high wind alert here
-        // sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $windSpeed")
-      }
-    }
+//    query.awaitTermination()
+//
+//    // Code after query termination
+//    val lastWindSpeed = df.select("wind_mph")
+//      .orderBy(desc("timestamp"))
+//      .limit(1)
+//      .firstOption()
+//      .map(_.getDouble(0))
+//
+//    lastWindSpeed.foreach { windSpeed =>
+//      println("\n\n\n")
+//      println(windSpeed)
+//      println("\n\n\n")
+//
+//      if (windSpeed > 4.0) {
+//        println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
+//        // Perform actions for high wind alert here
+//        // sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $windSpeed")
+//      }
+//    }
 
 
   }
