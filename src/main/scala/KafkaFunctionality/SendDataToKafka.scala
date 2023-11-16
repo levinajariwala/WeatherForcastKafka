@@ -110,7 +110,7 @@ object SendDataToKafka {
 //    messageDF.select("File")
     messageDF
       .write
-      .format("kafka")
+//      .format("kafka")
       .option("kafka.bootstrap.servers", kafkaServer)
       .option("topic", topicSampleName)
       .save()
