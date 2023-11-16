@@ -3,7 +3,7 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 //import org.apache.commons.mail._
-object ReadFromKafka {
+object ReadFromKafka  {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder().appName("KafkaToJson").master("local[*]").getOrCreate()
 
@@ -25,27 +25,6 @@ object ReadFromKafka {
       StructField("wind_mph", DoubleType, nullable = true),
       StructField("humidity", IntegerType, nullable = true)
     ))
-
-    // Define the schema for the JSON messages
-//    val schema = StructType(Seq(
-//      StructField("id", StringType, nullable = true),
-//      StructField("stationName", StringType, nullable = true),
-//      StructField("lineName", StringType, nullable = true),
-//      StructField("towards", StringType, nullable = true),
-//      StructField("expectedArrival", StringType, nullable = true),
-//      StructField("vehicleId", StringType, nullable = true),
-//      StructField("platformName", StringType, nullable = true),
-//      StructField("direction", StringType, nullable = true),
-//      StructField("destinationName", StringType, nullable = true),
-//      StructField("timestamp", StringType, nullable = true),
-//      StructField("timeToStation", StringType, nullable = true),
-//      StructField("currentLocation", StringType, nullable = true),
-//      StructField("timeToLive", StringType, nullable = true)
-//    ))
-//    import spark.implicits._
-    // Read the JSON messages from Kafka as a DataFrame
-//    val df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", "ip-172-31-3-80.eu-west-2.compute.internal:9092").option("subscribe", topic).option("startingOffsets", "earliest").load().select(from_json(col("value").cast("string"), schema).as("data")).selectExpr("data.*")
-//    println(df)
 
     // Read from Kafka and parse JSON data
     val df = spark.readStream
@@ -82,8 +61,6 @@ object ReadFromKafka {
 //    query.awaitTermination()
 
 
-    // Write the DataFrame as CSV files to HDFS
-//    df.writeStream.format("csv").option("checkpointLocation", "/tmp/jenkins/kafka/trainarrival/checkpoint").option("path", "/tmp/jenkins/kafka/trainarrival/data").start().awaitTermination()
     spark.stop()
   }
 
