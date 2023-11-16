@@ -63,10 +63,39 @@ object ReadFromKafka {
       .start()
       .awaitTermination()
 
+    // Check if the last message's wind is higher than 4
+    val lastMessageWind = df.select("wind_mph").orderBy(desc("timestamp")).limit(1).first().getDouble(0)
+    if (lastMessageWind > 4.0) {
+      // Send an email alert
+      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
+    }
+
+    // Start the streaming query
+    val query = df.writeStream
+      .outputMode("append")
+      .format("console")
+      .start()
+
+    query.awaitTermination()
+
 
     // Write the DataFrame as CSV files to HDFS
 //    df.writeStream.format("csv").option("checkpointLocation", "/tmp/jenkins/kafka/trainarrival/checkpoint").option("path", "/tmp/jenkins/kafka/trainarrival/data").start().awaitTermination()
 
+  }
+
+  // Function to send email alert
+  def sendEmailAlert(recipient: String, subject: String, body: String): Unit = {
+    val email = new SimpleEmail()
+    email.setHostName("smtp.gmail.com")
+    email.setSmtpPort(587)
+    email.setAuthenticator(new DefaultAuthenticator("15mscit026@gmail.com", "Local$16S"))
+    email.setSSLOnConnect(true)
+    email.setFrom("15mscit026@gmail.com")
+    email.setSubject(subject)
+    email.setMsg(body)
+    email.addTo(recipient)
+    email.send()
   }
 
 }
