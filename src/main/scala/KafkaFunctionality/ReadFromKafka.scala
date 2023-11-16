@@ -93,11 +93,13 @@ val properties = new Properties()
 
       message.setFrom(new InternetAddress("15mscit026@gmail.com@example.com")) // Replace with sender email
 
-      // Create an array of InternetAddress objects for the recipient's email addresses
-      val recipientAddresses = Array(new InternetAddress("levinajariwala@gmail.com"))
+      // Create an array of recipient email addresses
+      val recipients = Array("levinajariwala@gmail.com")
 
-      // Set the recipient addresses using the array of InternetAddress objects
-      message.setRecipients(Message.RecipientType.TO, recipientAddresses)
+      // Add each recipient to the message individually
+      recipients.foreach { recipientEmail =>
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail))
+      }
 //      message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("levinajariwala@gmail.com"))
       message.setSubject(subject)
       message.setText(body)
