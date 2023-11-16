@@ -39,6 +39,12 @@ object ReadFromKafka  {
       .select(from_json(col("value").cast("string"), schema).as("data"))
       .selectExpr("data.*")
 
+    // Check if the last message's wind is higher than 4
+    val lastMessageWind = df.select("wind_mph").orderBy(desc("timestamp")).limit(1).first().getDouble(0)
+    println("\n\n\n")
+
+    print(lastMessageWind)
+    println("\n\n\n")
     // Show DataFrame
     df.writeStream
       .outputMode("append")
@@ -46,12 +52,7 @@ object ReadFromKafka  {
       .start()
       .awaitTermination()
 
-    // Check if the last message's wind is higher than 4
-    val lastMessageWind = df.select("wind_mph").orderBy(desc("timestamp")).limit(1).first().getDouble(0)
-    println("\n\n\n")
 
-    print(lastMessageWind)
-    println("\n\n\n")
 
     if (lastMessageWind > 4.0) {
       println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
