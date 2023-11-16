@@ -56,7 +56,7 @@ object ReadFromKafka  {
       .format("console")
       .start()
       .awaitTermination()
-
+    query.awaitTermination()
 
 
     if (lastWindSpeed > 4.0) {
