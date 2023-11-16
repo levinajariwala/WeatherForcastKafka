@@ -51,23 +51,19 @@ object ReadFromKafka  {
 
     query.awaitTermination()
 
-    // Code after query termination
-    val lastWindSpeed = df.select("wind_mph")
+    // Retrieve the last wind speed after the query has finished
+    df.select("wind_mph")
       .orderBy(desc("timestamp"))
       .limit(1)
-      .firstOption()
-      .map(_.getDouble(0))
-
-    lastWindSpeed.foreach { windSpeed =>
-      println("\n\n\n")
-      println(windSpeed)
-      println("\n\n\n")
-
-      if (windSpeed > 4.0) {
-        println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
-        // Print alert for high wind speed
+      .as[Double]
+      .collect()
+      .headOption
+      .foreach { lastWindSpeed =>
+        if (lastWindSpeed > 4.0) {
+          println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
+          // Print alert for high wind speed
+        }
       }
-    }
 //    val lastWindSpeed = df.select("wind_mph")
 //      .orderBy(desc("timestamp"))
 //      .limit(1)
