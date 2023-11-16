@@ -43,13 +43,13 @@ object ReadFromKafka  {
     // Check if the last message's wind is higher than 4
     // Retrieve the last wind speed from the DataFrame
     // Output the processed data to the console (for demonstration purposes)
-//    val query = df.writeStream
-//      .outputMode("append")
-//      .format("console")
-//      .trigger(Trigger.ProcessingTime("5 seconds"))
-//      .start()
-//
-//    query.awaitTermination()
+    val query = df.writeStream
+      .outputMode("append")
+      .format("console")
+      .trigger(Trigger.ProcessingTime("5 seconds"))
+      .start()
+
+    query.awaitTermination()
 
     // Convert the DataFrame to an RDD and extract the last wind speed
     val lastWindSpeedRDD = df.orderBy(desc("timestamp"))
@@ -59,12 +59,18 @@ object ReadFromKafka  {
 
     val lastWindSpeed = lastWindSpeedRDD.collect().headOption
 
+    println("Last Wind Speed Retrieved: " + lastWindSpeed.getOrElse("No wind speed retrieved"))
+
     lastWindSpeed.foreach { windSpeed =>
       if (windSpeed > 4.0) {
         println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
-        // Print alert for high wind speed
+        println(s"High Wind Speed Detected: $windSpeed mph")
+        // Any action or alert for high wind speed
+      } else {
+        println("No high wind speed detected.")
       }
     }
+
 
     //    val lastWindSpeed = df.select("wind_mph")
 //      .orderBy(desc("timestamp"))
