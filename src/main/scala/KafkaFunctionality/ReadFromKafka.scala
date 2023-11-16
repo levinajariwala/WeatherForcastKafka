@@ -73,13 +73,13 @@ object ReadFromKafka {
 //      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
     }
 
-    // Start the streaming query
-    val query = df.writeStream
-      .outputMode("append")
-      .format("console")
-      .start()
-
-    query.awaitTermination()
+//    // Start the streaming query
+//    val query = df.writeStream
+//      .outputMode("append")
+//      .format("console")
+//      .start()
+//
+//    query.awaitTermination()
 
 
     // Write the DataFrame as CSV files to HDFS
