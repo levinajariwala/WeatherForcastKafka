@@ -110,16 +110,16 @@ object SendDataToKafka {
     println("63")
     messageDF.show()
 //    messageDF.select("File")
+// Assuming messageDF contains 'wind_mph' and 'humidity' columns
+val formattedDF = messageDF.withColumn("value", to_json(struct($"wind_mph", $"humidity")))
 
-    messageDF
-    .selectExpr("CAST(wind_mph AS STRING) AS key", "CAST(wind_mph AS STRING) AS value")
-//      .selectExpr("CAST(wind_mph AS STRING)", "CAST(humidity AS STRING)") // Converting columns to String type
-      .writeStream
+    formattedDF
+      .selectExpr("CAST(value AS STRING)")
+      .write
       .format("kafka")
       .option("kafka.bootstrap.servers", kafkaServer)
       .option("topic", topicSampleName)
-//      .option("checkpointLocation", "/path/to/checkpoint/directory") // Specify a checkpoint directory
-      .start()
+      .save()
 
     println("Message is loaded to Kafka topic")
     Thread.sleep(10000) // Wait for 10 seconds before making the next call
