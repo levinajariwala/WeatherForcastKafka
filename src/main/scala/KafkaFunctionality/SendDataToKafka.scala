@@ -108,12 +108,14 @@ object SendDataToKafka {
     println("63")
     messageDF.show()
 //    messageDF.select("File")
-    messageDF
-      .write
-//      .format("kafka")
+        val query = messageDF
+      .selectExpr("CAST(wind_mph AS STRING)", "CAST(humidity AS STRING)") // Converting columns to String type
+      .writeStream
+      .format("kafka")
       .option("kafka.bootstrap.servers", kafkaServer)
       .option("topic", topicSampleName)
-      .save()
+//      .option("checkpointLocation", "/path/to/checkpoint/directory") // Specify a checkpoint directory
+      .start()
 
     println("Message is loaded to Kafka topic")
     Thread.sleep(10000) // Wait for 10 seconds before making the next call
