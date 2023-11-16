@@ -67,7 +67,7 @@ object ReadFromKafka {
     // Check if the last message's wind is higher than 4
     val lastMessageWind = df.select("wind_mph").orderBy(desc("timestamp")).limit(1).first().getDouble(0)
     if (lastMessageWind > 4.0) {
-      println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!")
+      println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
       // Send an email alert
 //      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
     }
