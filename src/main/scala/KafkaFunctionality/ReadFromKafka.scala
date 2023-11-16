@@ -51,17 +51,17 @@ object ReadFromKafka  {
 
     query.awaitTermination()
 
-    // Convert the DataFrame to an RDD and extract the last wind speed
-    val lastWindSpeedRDD = df.orderBy(desc("timestamp"))
-      .limit(1)
-      .rdd
-      .map(row => row.getAs[Double]("wind_mph"))
+    import org.apache.spark.sql.functions.{max, col}
 
-    val lastWindSpeed = lastWindSpeedRDD.collect().headOption
+    val lastWindSpeedDF = df.select(max("timestamp").as("max_timestamp"))
+      .join(df, col("timestamp") === col("max_timestamp"))
+      .select("wind_mph")
 
-    println("Last Wind Speed Retrieved: " + lastWindSpeed.getOrElse("No wind speed retrieved"))
+    val lastWindSpeed = lastWindSpeedDF.collect().map(_.getDouble(0)).headOption
 
     lastWindSpeed.foreach { windSpeed =>
+      println("Last Wind Speed Retrieved: " + windSpeed)
+
       if (windSpeed > 4.0) {
         println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
         println(s"High Wind Speed Detected: $windSpeed mph")
