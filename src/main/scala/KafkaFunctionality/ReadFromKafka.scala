@@ -43,6 +43,7 @@ object ReadFromKafka {
     df.writeStream
       .outputMode("append")
       .format("hive")
+      .option("checkpointLocation", "/tmp/bduk1710/Levina/wind_info")
 //      .option("checkpointLocation", "/path/to/checkpoint") // Specify the checkpoint location
       .option("table", "bduk_test1. wind_info") // Specify your Hive table name
       .start()
