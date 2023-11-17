@@ -49,8 +49,19 @@ object ReadFromKafka  {
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
 
-    val lastMessageWind = 5.0
-    sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
+    // Fetching the last record and checking wind speed
+    val lastWindSpeedDF = df.select("wind_mph", "localtime")
+      .orderBy(col("localtime").desc)
+      .limit(1)
+
+    val lastWindSpeedRow = lastWindSpeedDF.collect().headOption
+    println("\n\n\n")
+    println(lastWindSpeedRow)
+    println("\n\n\n")
+
+
+    //    val lastMessageWind = 5.0
+//    sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
 
 //    import org.apache.spark.sql.functions.{max, col}
 //
