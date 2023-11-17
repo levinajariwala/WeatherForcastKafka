@@ -51,8 +51,10 @@ object ReadFromKafka  {
       .format("console")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .foreachBatch { (batchDF: DataFrame, batchId: Long) =>
+
         val lastRecordDF = batchDF.orderBy($"localtime".desc).limit(1)
         print("iiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+        print(batchDF)
         if (!lastRecordDF.isEmpty) {
           val windSpeedRow = lastRecordDF.select("wind_mph").collectAsList()
 
