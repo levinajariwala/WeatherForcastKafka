@@ -49,7 +49,7 @@ object ReadFromKafka  {
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
 
-    query.awaitTerminationOrTimeout(2000)
+
 
     import org.apache.spark.sql.functions.{max, col}
 
@@ -70,7 +70,7 @@ object ReadFromKafka  {
         println("No high wind speed detected.")
       }
     }
-
+    query.awaitTermination()
 
     //    val lastWindSpeed = df.select("wind_mph")
 //      .orderBy(desc("timestamp"))
