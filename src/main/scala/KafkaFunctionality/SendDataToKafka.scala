@@ -106,9 +106,9 @@ object SendDataToKafka {
       // Selecting required fields and extracting wind and humidity
       val extractedDF = dfFromText.select(
         $"current.wind_mph".alias("wind_mph"),
-//        $"current.humidity".alias("humidity"),
+        $"current.humidity".alias("humidity"),
 //        $"location.localtime".alias("localtime") ,
-        lit(londonLocalTime).alias("london_localtime")
+        lit(londonLocalTime).alias("localtime")
       )
 
       // Assuming you want to create a messageDF with specific columns and pass wind and humidity
