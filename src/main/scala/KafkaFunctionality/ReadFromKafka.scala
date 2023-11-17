@@ -46,24 +46,12 @@ object ReadFromKafka  {
 
     import spark.implicits._
 
-    The error indicates that the method headOption() is not a member of org.apache.spark.sql.DataFrame.Apologies
-    for the confusion earlier.In structured streaming
-    with Spark
-    , certain operations available on static DataFrames may not be directly applicable to streaming DataFrames
-  .
-
-    Let
-    's adjust the code to handle this scenario:
-
-      scala
-    Copy code
     val query = df.writeStream
       .outputMode("append")
       .format("console")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .foreachBatch { (batchDF: DataFrame, batchId: Long) =>
         val lastRecordDF = batchDF.orderBy($"localtime".desc).limit(1)
-        print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnn")
         if (!lastRecordDF.isEmpty) {
           val windSpeedRow = lastRecordDF.select("wind_mph").collectAsList()
 
