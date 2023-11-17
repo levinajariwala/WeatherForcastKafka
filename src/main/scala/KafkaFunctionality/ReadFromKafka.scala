@@ -1,9 +1,12 @@
 package KafkaFunctionality
-import org.apache.spark.sql.{DataFrame, SparkSession, functions => F}
+
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types.{DoubleType, StructField, StructType}
-import org.apache.spark.sql.types._
 import org.apache.spark.sql.streaming.Trigger
+import org.apache.spark.sql.types.{DoubleType, StringType, StructField, StructType}
+
+import org.apache.spark.sql.types._
+
 //import org.apache.commons.mail._
 import javax.mail._
 import javax.mail.internet._
@@ -47,15 +50,16 @@ object ReadFromKafka  {
       .format("console")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .foreachBatch { (batchDF: DataFrame, batchId: Long) =>
-        val lastRecordDF = batchDF.orderBy($"localtime".desc).limit(1)
-
+        val lastRecordDF = batchDF.orderBy($"timestamp".desc).limit(1)
+        println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
         if (!lastRecordDF.isEmpty && !lastRecordDF.select("wind_mph").head().isNullAt(0)) {
           val windSpeed = lastRecordDF.select("wind_mph").head().getDouble(0)
           println("\n\n\n")
-              println(lastRecordDF)
-              println("\n\n\n")
-          if (windSpeed > 4.0) {
+          println(windSpeed)
+          println("\n\n\n")
+          if (windSpeed > 5.0) {
             sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
+            println("High wind speed detected!") // Print alert message
           }
         }
       }
