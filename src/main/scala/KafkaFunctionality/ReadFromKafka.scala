@@ -42,26 +42,38 @@ object ReadFromKafka  {
       .selectExpr("data.*")
 
     import spark.implicits._
-
-    val lastRecordDF = df.orderBy($"localtime".desc).limit(1)
-    println("\n\n\n")
-    println(lastRecordDF)
-    println("\n\n\n")
-    // Check the last record for high wind speed
-    if (!lastRecordDF.isEmpty && lastRecordDF.select("wind_mph").head().getDouble(0) > 5.0) {
-      println("\n\n\n")
-      println("!!!!!!!!!!AAAAALLLLLLEEEEEERRRRRRTTTTTTT!!!!!!!")
-      println("\n\n\n")
-      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
-    }
-    // Check if the last message's wind is higher than 4
-    // Retrieve the last wind speed from the DataFrame
-    // Output the processed data to the console (for demonstration purposes)
     val query = df.writeStream
       .outputMode("append")
       .format("console")
       .trigger(Trigger.ProcessingTime("5 seconds"))
+      .foreachBatch { (batchDF: DataFrame, batchId: Long) =>
+        val lastRecordDF = batchDF.orderBy($"localtime".desc).limit(1)
+
+        if (!lastRecordDF.isEmpty && lastRecordDF.select("wind_mph").head().getDouble(0) > 5.0) {
+          sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
+        }
+      }
       .start()
+
+//    val lastRecordDF = df.orderBy($"localtime".desc).limit(1)
+//    println("\n\n\n")
+//    println(lastRecordDF)
+//    println("\n\n\n")
+//    // Check the last record for high wind speed
+//    if (!lastRecordDF.isEmpty && lastRecordDF.select("wind_mph").head().getDouble(0) > 5.0) {
+//      println("\n\n\n")
+//      println("!!!!!!!!!!AAAAALLLLLLEEEEEERRRRRRTTTTTTT!!!!!!!")
+//      println("\n\n\n")
+//      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
+//    }
+    // Check if the last message's wind is higher than 4
+    // Retrieve the last wind speed from the DataFrame
+    // Output the processed data to the console (for demonstration purposes)
+//    val query = df.writeStream
+//      .outputMode("append")
+//      .format("console")
+//      .trigger(Trigger.ProcessingTime("5 seconds"))
+//      .start()
 
 //    // Fetching the last record and checking wind speed
 //    val lastWindSpeedDF = df.select("wind_mph", "localtime")
