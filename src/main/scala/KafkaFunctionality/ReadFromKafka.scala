@@ -41,8 +41,10 @@ object ReadFromKafka  {
       .option("subscribe", topic)
       .option("startingOffsets", "earliest")
       .load()
-      .select(from_json(col("value").cast("string"), schema).as("data"))
+      .selectExpr("CAST(value AS STRING)") // Assuming the value column contains JSON strings
+      .select(from_json(col("value"), schema).as("data"))
       .selectExpr("data.*")
+
 
     import spark.implicits._
 
