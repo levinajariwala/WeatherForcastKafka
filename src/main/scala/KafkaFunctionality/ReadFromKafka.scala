@@ -94,8 +94,7 @@ object ReadFromKafka {
           .insertInto("bduk_test1.wind_info") // Replace with your Hive table name
       }
       .start()
-      }
-      .start()
+
 
 
 
