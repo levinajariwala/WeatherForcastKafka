@@ -72,10 +72,20 @@ object ReadFromKafka {
           }
         }
         // Insert processed data into Hive table
-        batchDF.write
-//          .format("hive")
+//        batchDF.write
+////          .format("hive")
+//          .mode("append")
+//          .insertInto("bduk_test1.wind_info") // Replace with your Hive table name
+// Filter the DataFrame to get unique records based on 'localtime'
+val uniqueRecords = batchDF
+  .withColumn("rank", row_number().over(Window.partitionBy("localtime").orderBy("localtime")))
+  .where("rank = 1")
+  .drop("rank")
+
+        // Write the unique records to the Hive table
+        uniqueRecords.write
           .mode("append")
-          .insertInto("bduk_test1.wind_info") // Replace with your Hive table name
+          .insertInto("bduk_test1.wind_info")
       }
       .start()
 
