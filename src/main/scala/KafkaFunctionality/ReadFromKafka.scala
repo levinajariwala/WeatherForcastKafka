@@ -51,31 +51,33 @@ object ReadFromKafka  {
       .format("console")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .foreachBatch { (batchDF: DataFrame, batchId: Long) =>
-
-        val lastRecordDF = batchDF.orderBy($"localtime".desc).limit(1)
-        print("iiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+        println("iiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
         println("Entire Batch:")
-        batchDF.show()
-        if (!lastRecordDF.isEmpty) {
-          val windSpeedRow = lastRecordDF.select("wind_mph").collectAsList()
+        batchDF.show(truncate = false) // Set truncate to false to display full column contents
+        if (!batchDF.isEmpty) {
+          val lastRecordDF = batchDF.orderBy($"localtime".desc).limit(1)
           println("Last Record:")
-          lastRecordDF.show()
-          if (!windSpeedRow.isEmpty) {
-            val windSpeed = windSpeedRow.get(0).getAs[Double]("wind_mph")
-            print("\n\n\n\n")
-            print(windSpeed)
-            print("\n\n\n\n")
-            if (windSpeed > 2.0) {
-              sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
-              print("\n\n\n\n")
-              println("High wind speed detected!") // Print alert message
-              print("\n\n\n\n")
+          lastRecordDF.show(truncate = false) // Set truncate to false to display full column contents
+          if (!lastRecordDF.isEmpty) {
+            val windSpeedRow = lastRecordDF.select("wind_mph").collectAsList()
+            println("Wind Speed Row:")
+            println(windSpeedRow)
+            if (!windSpeedRow.isEmpty) {
+              val windSpeed = windSpeedRow.get(0).getAs[Double]("wind_mph")
+              println("\n\n\n\n")
+              println(windSpeed)
+              println("\n\n\n\n")
+              if (windSpeed > 2.0) {
+                sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
+                println("\n\n\n\n")
+                println("High wind speed detected!") // Print alert message
+                println("\n\n\n\n")
+              }
             }
           }
         }
       }
       .start()
-
 
     //    val lastRecordDF = df.orderBy($"localtime".desc).limit(1)
 //    println("\n\n\n")
