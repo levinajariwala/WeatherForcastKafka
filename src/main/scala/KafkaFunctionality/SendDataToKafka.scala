@@ -10,6 +10,10 @@ import org.apache.spark.sql.types._
 
 import java.io.{File, OutputStreamWriter}
 import okhttp3.{OkHttpClient, Request}
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+
 import okio.Okio
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
@@ -94,11 +98,17 @@ object SendDataToKafka {
       // Read JSON string as DataFrame using the defined schema
       val dfFromText: DataFrame = spark.read.schema(schema).json(Seq(responseBody).toDS)
       println(dfFromText)
+      // Set the time zone to Europe/London
+      val londonZoneId = ZoneId.of("Europe/London")
+      // Fetch the London local time
+      val londonLocalTime = LocalDateTime.now(londonZoneId).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
       // Selecting required fields and extracting wind and humidity
       val extractedDF = dfFromText.select(
         $"current.wind_mph".alias("wind_mph"),
-        $"current.humidity".alias("humidity"),
-        $"location.localtime".alias("localtime")
+//        $"current.humidity".alias("humidity"),
+//        $"location.localtime".alias("localtime") ,
+        lit(londonLocalTime).alias("london_localtime")
       )
 
       // Assuming you want to create a messageDF with specific columns and pass wind and humidity
