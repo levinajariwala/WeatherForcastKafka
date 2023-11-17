@@ -37,6 +37,15 @@ object ReadFromKafka {
       .selectExpr("CAST(value AS STRING)")
       .select(from_json(col("value"), schema).as("data"))
       .selectExpr("data.*")
+      .withColumn("is_alert", when($"wind_mph" > 2.0, 1).otherwise(0))
+
+    // Write the DataFrame to Hive table
+    df.writeStream
+      .outputMode("append")
+      .format("hive")
+//      .option("checkpointLocation", "/path/to/checkpoint") // Specify the checkpoint location
+      .option("table", "bduk_test1. wind_info") // Specify your Hive table name
+      .start()
 
     import spark.implicits._
 
