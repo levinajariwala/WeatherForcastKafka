@@ -39,7 +39,10 @@ object ReadFromKafka  {
       .load()
       .select(from_json(col("value").cast("string"), schema).as("data"))
       .selectExpr("data.*")
-
+    val lastRecordDF = getLastRecord(df)
+    println("\n\n\n")
+    println(lastRecordDF)
+    println("\n\n\n")
     // Check if the last message's wind is higher than 4
     // Retrieve the last wind speed from the DataFrame
     // Output the processed data to the console (for demonstration purposes)
@@ -49,15 +52,15 @@ object ReadFromKafka  {
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
 
-    // Fetching the last record and checking wind speed
-    val lastWindSpeedDF = df.select("wind_mph", "localtime")
-      .orderBy(col("localtime").desc)
-      .limit(1)
-
-    val lastWindSpeedRow = lastWindSpeedDF.collect().headOption
-    println("\n\n\n")
-    println(lastWindSpeedRow)
-    println("\n\n\n")
+//    // Fetching the last record and checking wind speed
+//    val lastWindSpeedDF = df.select("wind_mph", "localtime")
+//      .orderBy(col("localtime").desc)
+//      .limit(1)
+//
+//    val lastWindSpeedRow = lastWindSpeedDF.collect().headOption
+//    println("\n\n\n")
+//    println(lastWindSpeedRow)
+//    println("\n\n\n")
 
 
     //    val lastMessageWind = 5.0
