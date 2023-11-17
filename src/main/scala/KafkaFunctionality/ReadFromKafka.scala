@@ -49,25 +49,28 @@ object ReadFromKafka  {
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
 
-    import org.apache.spark.sql.functions.{max, col}
+    val lastMessageWind = 5.0
+    sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", s"Last message wind: $lastMessageWind")
 
-    val lastWindSpeedDF = df.select(max("timestamp").as("max_timestamp"))
-      .join(df, col("timestamp") === col("max_timestamp"))
-      .select("wind_mph")
-
-    val lastWindSpeed = lastWindSpeedDF.collect().map(_.getDouble(0)).headOption
-
-    lastWindSpeed.foreach { windSpeed =>
-      println("Last Wind Speed Retrieved: " + windSpeed)
-
-      if (windSpeed > 4.0) {
-        println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
-        println(s"High Wind Speed Detected: $windSpeed mph")
-        // Any action or alert for high wind speed
-      } else {
-        println("No high wind speed detected.")
-      }
-    }
+//    import org.apache.spark.sql.functions.{max, col}
+//
+//    val lastWindSpeedDF = df.select(max("timestamp").as("max_timestamp"))
+//      .join(df, col("timestamp") === col("max_timestamp"))
+//      .select("wind_mph")
+//
+//    val lastWindSpeed = lastWindSpeedDF.collect().map(_.getDouble(0)).headOption
+//
+//    lastWindSpeed.foreach { windSpeed =>
+//      println("Last Wind Speed Retrieved: " + windSpeed)
+//
+//      if (windSpeed > 4.0) {
+//        println("!!!!!!!!!!!!!!!!AAAALLLLEEERRRRTTTT!!!!!!!!!!!!!!!!!!!")
+//        println(s"High Wind Speed Detected: $windSpeed mph")
+//        // Any action or alert for high wind speed
+//      } else {
+//        println("No high wind speed detected.")
+//      }
+//    }
     query.awaitTermination()
 
     //    val lastWindSpeed = df.select("wind_mph")
@@ -119,34 +122,34 @@ object ReadFromKafka  {
   }
 
   // Function to send email alert
-//  def sendEmailAlert(recipient: String, subject: String, body: String): Unit = {
-//   val properties = new java.util.Properties()
-//        properties.put("mail.smtp.host", "smtp.gmail.com") // Replace with your SMTP host
-//        properties.put("mail.smtp.port", "587") // Replace with your SMTP port
-//        properties.put("mail.smtp.auth", "true")
-//        properties.put("mail.smtp.starttls.enable", "true")
-//
-//        val session = Session.getInstance(properties, new javax.mail.Authenticator() {
-//          override protected def getPasswordAuthentication(): PasswordAuthentication = {
-//            new PasswordAuthentication("15mscit026@gmail.com", "zvqm ctzt izma xkaa") // Replace with your email and password
-//          }
-//        })
-//
-//        try {
-//          val message = new MimeMessage(session)
-//          message.setFrom(new InternetAddress("15mscit026@gmail.com")) // Replace with sender email
-//
-//          // Replace with recipient email
-//          message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient))
-//
-//          message.setSubject(subject)
-//          message.setText(body)
-//
-//          Transport.send(message)
-//          println("Email sent successfully!")
-//        } catch {
-//          case e: MessagingException => e.printStackTrace()
-//        }
-//  }
+  def sendEmailAlert(recipient: String, subject: String, body: String): Unit = {
+   val properties = new java.util.Properties()
+        properties.put("mail.smtp.host", "smtp.gmail.com") // Replace with your SMTP host
+        properties.put("mail.smtp.port", "587") // Replace with your SMTP port
+        properties.put("mail.smtp.auth", "true")
+        properties.put("mail.smtp.starttls.enable", "true")
+
+        val session = Session.getInstance(properties, new javax.mail.Authenticator() {
+          override protected def getPasswordAuthentication(): PasswordAuthentication = {
+            new PasswordAuthentication("15mscit026@gmail.com", "zvqm ctzt izma xkaa") // Replace with your email and password
+          }
+        })
+
+        try {
+          val message = new MimeMessage(session)
+          message.setFrom(new InternetAddress("15mscit026@gmail.com")) // Replace with sender email
+
+          // Replace with recipient email
+          message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient))
+
+          message.setSubject(subject)
+          message.setText(body)
+
+          Transport.send(message)
+          println("Email sent successfully!")
+        } catch {
+          case e: MessagingException => e.printStackTrace()
+        }
+  }
 
 }
