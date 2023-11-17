@@ -47,10 +47,13 @@ object ReadFromKafka  {
       .format("console")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .foreachBatch { (batchDF: DataFrame, batchId: Long) =>
-        val lastRecordDF = batchDF.orderBy($"localtime".desc).limit(1)
+        val lastRecordDF = batchDF.orderBy($"timestamp".desc).limit(1)
 
-        if (!lastRecordDF.isEmpty && lastRecordDF.select("wind_mph").head().getDouble(0) > 5.0) {
-          sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
+        if (!lastRecordDF.isEmpty && !lastRecordDF.select("wind_mph").head().isNullAt(0)) {
+          val windSpeed = lastRecordDF.select("wind_mph").head().getDouble(0)
+          if (windSpeed > 4.0) {
+            sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
+          }
         }
       }
       .start()
