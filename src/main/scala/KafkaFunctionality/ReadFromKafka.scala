@@ -54,10 +54,12 @@ object ReadFromKafka  {
 
         val lastRecordDF = batchDF.orderBy($"localtime".desc).limit(1)
         print("iiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
-        print(batchDF)
+        println("Entire Batch:")
+        batchDF.show()
         if (!lastRecordDF.isEmpty) {
           val windSpeedRow = lastRecordDF.select("wind_mph").collectAsList()
-
+          println("Last Record:")
+          lastRecordDF.show()
           if (!windSpeedRow.isEmpty) {
             val windSpeed = windSpeedRow.get(0).getAs[Double]("wind_mph")
             print("\n\n\n\n")
