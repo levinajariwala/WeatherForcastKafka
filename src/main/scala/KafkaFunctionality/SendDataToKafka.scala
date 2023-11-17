@@ -106,14 +106,14 @@ object SendDataToKafka {
       // Selecting required fields and extracting wind and humidity
       val extractedDF = dfFromText.select(
         $"current.wind_mph".alias("wind_mph"),
-        $"current.humidity".alias("humidity"),
+//        $"current.humidity".alias("humidity"),
 //        $"location.localtime".alias("localtime") ,
         lit(londonLocalTime).alias("localtime")
       )
 
       // Assuming you want to create a messageDF with specific columns and pass wind and humidity
       val messageDF = extractedDF.select(
-        $"wind_mph", $"humidity",$"localtime")
+        $"wind_mph",$"localtime")
 
 
       val kafkaServer: String = "ip-172-31-3-80.eu-west-2.compute.internal:9092"
@@ -122,7 +122,7 @@ object SendDataToKafka {
       messageDF.show()
       //    messageDF.select("File")
       // Assuming messageDF contains 'wind_mph' and 'humidity' columns
-      val formattedDF = messageDF.withColumn("value", to_json(struct($"wind_mph", $"humidity",$"localtime")))
+      val formattedDF = messageDF.withColumn("value", to_json(struct($"wind_mph",$"localtime")))
 
       formattedDF
         .selectExpr("CAST(value AS STRING)")
