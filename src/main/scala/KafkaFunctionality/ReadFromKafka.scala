@@ -91,7 +91,7 @@ object ReadFromKafka {
         batchDF.write
 //          .format("hive")
           .mode("overwrite")
-          .insertInto("wind_info") // Replace with your Hive table name
+          .insertInto("bduk_test1.wind_info") // Replace with your Hive table name
       }
       .start()
 
