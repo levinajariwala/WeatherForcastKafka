@@ -40,7 +40,10 @@ object ReadFromKafka  {
       .load()
       .select(from_json(col("value").cast("string"), schema).as("data"))
       .selectExpr("data.*")
-    val lastRecordDF = getLastRecord(df)
+
+    import spark.implicits._
+
+    val lastRecordDF = df.orderBy($"localtime".desc).limit(1)
     println("\n\n\n")
     println(lastRecordDF)
     println("\n\n\n")
