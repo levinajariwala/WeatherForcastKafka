@@ -40,19 +40,19 @@ object ReadFromKafka {
       .withColumn("is_alert", when(col("wind_mph") > 2.0, 1).otherwise(0))
 
     // Write the DataFrame to Hive table
-    df.writeStream
-      .outputMode("append")
-      .format("hive")
-      .option("checkpointLocation", "/tmp/bduk1710/Levina/wind_info")
-//      .option("checkpointLocation", "/path/to/checkpoint") // Specify the checkpoint location
-      .option("table", "bduk_test1. wind_info") // Specify your Hive table name
-      .start()
-//val dfWithAlertColumn = df.withColumn("is_alert", when(col("wind_mph") > 2.0, 1).otherwise(0))
-//
-//    dfWithAlertColumn.write
+//    df.writeStream
+//      .outputMode("append")
 //      .format("hive")
-//      .mode("overwrite") // Choose the appropriate mode
-//      .saveAsTable("wind_info")
+//      .option("checkpointLocation", "/tmp/bduk1710/Levina/wind_info")
+////      .option("checkpointLocation", "/path/to/checkpoint") // Specify the checkpoint location
+//      .option("table", "bduk_test1. wind_info") // Specify your Hive table name
+//      .start()
+
+    df.write
+      .format("hive")
+      .option("database", "bduk_test1") // Specify the database name
+      .mode("overwrite") // Choose the appropriate mode (overwrite, append, etc.)
+      .saveAsTable("wind_info")
 
     import spark.implicits._
 
