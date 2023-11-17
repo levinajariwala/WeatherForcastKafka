@@ -78,10 +78,11 @@ object ReadFromKafka {
 //          .mode("append")
 //          .insertInto("bduk_test1.wind_info") // Replace with your Hive table name
 // Filter the DataFrame to get unique records based on 'localtime'
-val uniqueRecords = batchDF
-  .withColumn("rank", row_number().over(Window.partitionBy("localtime").orderBy("localtime")))
-  .where("rank = 1")
-  .drop("rank")
+val existingLocalTimes = spark.sql("SELECT DISTINCT localtime FROM bduk_test1.wind_info") // Get existing localtime values
+
+        val uniqueRecords = batchDF
+          .join(existingLocalTimes, batchDF("localtime") === existingLocalTimes("localtime"), "left_anti") // Filter out existing localtimes
+          .drop(existingLocalTimes("localtime")) // Drop the additional column added by join
 
         // Write the unique records to the Hive table
         uniqueRecords.write
