@@ -37,7 +37,7 @@ object ReadFromKafka {
       .selectExpr("CAST(value AS STRING)")
       .select(from_json(col("value"), schema).as("data"))
       .selectExpr("data.*")
-      .withColumn("is_alert", when($"wind_mph" > 2.0, 1).otherwise(0))
+      .withColumn("is_alert", when(col("wind_mph") > 2.0, 1).otherwise(0))
 
     // Write the DataFrame to Hive table
     df.writeStream
