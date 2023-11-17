@@ -47,12 +47,14 @@ object ReadFromKafka {
 ////      .option("checkpointLocation", "/path/to/checkpoint") // Specify the checkpoint location
 //      .option("table", "bduk_test1. wind_info") // Specify your Hive table name
 //      .start()
-
+    // Write processed data to Hive table
     df.write
-      .format("hive")
-      .option("database", "bduk_test1") // Specify the database name
-      .mode("overwrite") // Choose the appropriate mode (overwrite, append, etc.)
-      .saveAsTable("wind_info")
+      .insertInto("bduk_test1.wind_info") // Specify your Hive table
+    // Write processed data to Hive table
+//    df.write
+//      .format("hive")
+//      .mode("append")
+//      .insertInto("your_database.your_table") // Specify your Hive table
 
     import spark.implicits._
 
