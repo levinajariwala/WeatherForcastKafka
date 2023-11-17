@@ -123,7 +123,7 @@ object SendDataToKafka {
         .save()
 
       println("Message is loaded to Kafka topic")
-      Thread.sleep(1000000) // Wait for 10 seconds before making the next call
+      Thread.sleep(100000) // Wait for 10 seconds before making the next call
 
 //      spark.stop()
     }
