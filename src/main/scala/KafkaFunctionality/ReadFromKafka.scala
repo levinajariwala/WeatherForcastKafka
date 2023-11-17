@@ -51,6 +51,9 @@ object ReadFromKafka  {
 
         if (!lastRecordDF.isEmpty && !lastRecordDF.select("wind_mph").head().isNullAt(0)) {
           val windSpeed = lastRecordDF.select("wind_mph").head().getDouble(0)
+          println("\n\n\n")
+              println(lastRecordDF)
+              println("\n\n\n")
           if (windSpeed > 4.0) {
             sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
           }
