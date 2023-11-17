@@ -47,6 +47,13 @@ object ReadFromKafka  {
     println("\n\n\n")
     println(lastRecordDF)
     println("\n\n\n")
+    // Check the last record for high wind speed
+    if (!lastRecordDF.isEmpty && lastRecordDF.select("wind_mph").head().getDouble(0) > 5.0) {
+      println("\n\n\n")
+      println("!!!!!!!!!!AAAAALLLLLLEEEEEERRRRRRTTTTTTT!!!!!!!")
+      println("\n\n\n")
+      sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
+    }
     // Check if the last message's wind is higher than 4
     // Retrieve the last wind speed from the DataFrame
     // Output the processed data to the console (for demonstration purposes)
