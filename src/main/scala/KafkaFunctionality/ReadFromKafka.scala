@@ -91,7 +91,7 @@ object ReadFromKafka {
         batchDF.write
           .format("hive")
           .mode("append")
-          .insertInto("bduk_test1.wind_info") // Replace with your Hive table name
+          .insertInto("weather_forecast.wind_info") // Replace with your Hive table name
       }
       .start()
 
