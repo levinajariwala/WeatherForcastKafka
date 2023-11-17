@@ -26,7 +26,7 @@ object ReadFromKafka  {
     )
 
     // Define the Kafka topic to subscribe to
-    val topic = "weather_forecast"
+    val topic = "weather_forecast_kafka"
 
     // Define your schema
     val schema = StructType(Seq(
