@@ -37,24 +37,8 @@ object ReadFromKafka {
       .selectExpr("CAST(value AS STRING)")
       .select(from_json(col("value"), schema).as("data"))
       .selectExpr("data.*")
-      .withColumn("is_alert", when(col("wind_mph") > 2.0, 1).otherwise(0))
+      .withColumn("is_alert", when(col("wind_mph") > 4.0, 1).otherwise(0))
 
-    // Write the DataFrame to Hive table
-//    df.writeStream
-//      .outputMode("append")
-//      .format("hive")
-//      .option("checkpointLocation", "/tmp/bduk1710/Levina/wind_info")
-////      .option("checkpointLocation", "/path/to/checkpoint") // Specify the checkpoint location
-//      .option("table", "bduk_test1. wind_info") // Specify your Hive table name
-//      .start()
-//    // Write processed data to Hive table
-//    df.write
-//      .insertInto("bduk_test1.wind_info") // Specify your Hive table
-    // Write processed data to Hive table
-//    df.write
-//      .format("hive")
-//      .mode("append")
-//      .insertInto("your_database.your_table") // Specify your Hive table
 
     import spark.implicits._
 
@@ -80,7 +64,7 @@ object ReadFromKafka {
             if (!windSpeedRow.isEmpty) {
               val windSpeed = windSpeedRow.get(0).getAs[Double]("wind_mph")
 
-              if (windSpeed > 2.0) {
+              if (windSpeed > 4.0) {
                 sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
                 println("High wind speed detected!")
               }
