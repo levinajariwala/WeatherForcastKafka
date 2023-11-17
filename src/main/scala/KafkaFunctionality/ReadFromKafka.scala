@@ -51,22 +51,23 @@ object ReadFromKafka  {
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .foreachBatch { (batchDF: DataFrame, batchId: Long) =>
         val lastRecordDF = batchDF.orderBy($"localtime".desc).limit(1)
-        println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
-        println(lastRecordDF.select("wind_mph").head().getDouble(0))
-        if (!lastRecordDF.isEmpty && !lastRecordDF.select("wind_mph").head().isNullAt(0)) {
-          val windSpeed = lastRecordDF.select("wind_mph").head().getDouble(0)
-          println("\n\n\n")
-          println(windSpeed)
-          println("\n\n\n")
-          if (windSpeed > 5.0) {
-            sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
-            println("High wind speed detected!") // Print alert message
+        print("iiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+        if (!lastRecordDF.isEmpty) {
+          val windSpeedRow = lastRecordDF.select("wind_mph").headOption()
+
+          windSpeedRow.foreach { row =>
+            val windSpeed = row.getAs[Double]("wind_mph")
+            if (windSpeed > 5.0) {
+              sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
+              println("High wind speed detected!") // Print alert message
+            }
           }
         }
       }
       .start()
 
-//    val lastRecordDF = df.orderBy($"localtime".desc).limit(1)
+
+    //    val lastRecordDF = df.orderBy($"localtime".desc).limit(1)
 //    println("\n\n\n")
 //    println(lastRecordDF)
 //    println("\n\n\n")
