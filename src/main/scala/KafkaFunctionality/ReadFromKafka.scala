@@ -25,7 +25,7 @@ object ReadFromKafka {
 
     val schema = StructType(Seq(
       StructField("wind_mph", DoubleType, nullable = true),
-      StructField("localtime", IntegerType, nullable = true)
+      StructField("localtime", StringType, nullable = true) // Change to StringType as per the data received
     ))
 
     val df = spark.readStream
@@ -49,7 +49,6 @@ object ReadFromKafka {
         println("Entire Batch:")
         batchDF.show(truncate = false)
         print("\n\n\n\n\n")
-
         if (!batchDF.isEmpty) {
           val lastRecordDF = batchDF.orderBy($"localtime".desc).limit(1)
           print("\n\n\n\n\n")
