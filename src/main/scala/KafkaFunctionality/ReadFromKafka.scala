@@ -63,7 +63,9 @@ object ReadFromKafka  {
             print("\n\n\n\n")
             if (windSpeed > 2.0) {
               sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
+              print("\n\n\n\n")
               println("High wind speed detected!") // Print alert message
+              print("\n\n\n\n")
             }
           }
         }
