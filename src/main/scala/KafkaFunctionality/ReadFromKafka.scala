@@ -1,6 +1,7 @@
 package KafkaFunctionality
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession, functions => F}
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types.{DoubleType, StructField, StructType}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.streaming.Trigger
 //import org.apache.commons.mail._
