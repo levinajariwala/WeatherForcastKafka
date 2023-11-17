@@ -49,8 +49,6 @@ object ReadFromKafka  {
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
 
-
-
     import org.apache.spark.sql.functions.{max, col}
 
     val lastWindSpeedDF = df.select(max("timestamp").as("max_timestamp"))
