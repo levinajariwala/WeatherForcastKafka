@@ -89,8 +89,8 @@ object ReadFromKafka {
         }
         // Insert processed data into Hive table
         batchDF.write
-          .format("hive")
-          .mode("append")
+//          .format("hive")
+          .mode("overwrite")
           .insertInto("wind_info") // Replace with your Hive table name
       }
       .start()
