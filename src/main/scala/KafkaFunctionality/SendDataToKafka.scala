@@ -2,21 +2,14 @@
 
 package KafkaFunctionality
 
-//import scala.util.parsing.json.JSON
-
 import org.apache.spark.sql.{SparkSession, DataFrame}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 
-import java.io.{File, OutputStreamWriter}
 import okhttp3.{OkHttpClient, Request}
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-
-import okio.Okio
-import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types._
 
 object SendDataToKafka {
   def main(args: Array[String]): Unit = {
@@ -41,9 +34,6 @@ object SendDataToKafka {
       val responseBody = response.body().string()
       print(responseBody)
 
-      // Parse the JSON string
-      //    val dfFromText = JSON.parseFull(responseBody)
-      //    val dfFromText: Any = spark.read.json(Seq(responseBody).toDS)
 
       val schema = StructType(
         Array(
@@ -106,8 +96,6 @@ object SendDataToKafka {
       // Selecting required fields and extracting wind and humidity
       val extractedDF = dfFromText.select(
         $"current.wind_mph".alias("wind_mph"),
-//        $"current.humidity".alias("humidity"),
-//        $"location.localtime".alias("localtime") ,
         lit(londonLocalTime).alias("localtime")
       )
 
@@ -120,7 +108,6 @@ object SendDataToKafka {
       val topicSampleName: String = "weather_forecast_kafka"
       println("63")
       messageDF.show()
-      //    messageDF.select("File")
       // Assuming messageDF contains 'wind_mph' and 'humidity' columns
       val formattedDF = messageDF.withColumn("value", to_json(struct($"wind_mph",$"localtime")))
 
@@ -135,7 +122,6 @@ object SendDataToKafka {
       println("Message is loaded to Kafka topic!!")
       Thread.sleep(60000) // Wait for 10 seconds before making the next call
 
-//      spark.stop()
     }
   }
 
