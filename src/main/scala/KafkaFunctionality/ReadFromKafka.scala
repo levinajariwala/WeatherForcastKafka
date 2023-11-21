@@ -38,7 +38,7 @@ object ReadFromKafka {
       .selectExpr("CAST(value AS STRING)")
       .select(from_json(col("value"), schema).as("data"))
       .selectExpr("data.*")
-      .withColumn("is_alert", when(col("wind_mph") > 10.0, 1).otherwise(0))
+      .withColumn("is_alert", when(col("wind_mph") > 8.0, 1).otherwise(0))
 
 
     import spark.implicits._
@@ -65,7 +65,7 @@ object ReadFromKafka {
             if (!windSpeedRow.isEmpty) {
               val windSpeed = windSpeedRow.get(0).getAs[Double]("wind_mph")
 
-              if (windSpeed > 10.0) {
+              if (windSpeed > 8.0) {
                 sendEmailAlert("levinajariwala@gmail.com", "High Wind Alert", "High wind speed detected!")
                 println("High wind speed detected!")
               }
